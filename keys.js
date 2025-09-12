@@ -99,7 +99,7 @@
     "Kay-YVNRQC": { plan:{days:30}, note:"VIP 30 ngày" },"Kay-VJXKTD": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-CGLQMP": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-GQZHTN": { plan:{days:30}, note:"VIP 30 ngày" },
-    "Kay-230509": { plan:{days:30}, note:"VIP 365 ngày" },
+    "Kay-Sieudeptrai": { plan:{days:30}, note:"VIP 365 ngày" },
     "Kay-PDXQJW": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-RJTYKM": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-WQBNZR": { plan:{days:30}, note:"VIP 30 ngày" },
