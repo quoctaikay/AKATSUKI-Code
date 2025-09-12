@@ -1,0 +1,363 @@
+<html lang="vi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>AKATSUKI IPA TEAM</title>
+<meta name="color-scheme" content="dark">
+<style>
+  /* ========= NEO GREEN UPGRADE (visual only) ========= */
+  :root{
+    --bg:#060b08; --panel:#0d1914; --panel2:#0a1410; --line:#1a3b2f;
+    --ink:#eafff6; --mut:#c8efe0; --g1:#00ff9c; --g2:#00d874; --danger:#ff5c6e;
+    --r-xl:18px; --r:14px; --shadow:0 26px 80px rgba(0,0,0,.62);
+    --halo:0 0 0 1px rgba(255,255,255,.04) inset, 0 0 42px rgba(0,255,156,.16), 0 10px 28px rgba(0,0,0,.5);
+    --glow:0 0 0 1px rgba(0,255,156,.26) inset, 0 0 34px rgba(0,255,156,.28), 0 14px 42px rgba(0,0,0,.56);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--ink);
+    font:500 15px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+    background:
+      radial-gradient(1200px 620px at 70% 8%, rgba(0,255,156,.16), transparent 60%),
+      radial-gradient(900px 520px at 12% 90%, rgba(0,216,116,.14), transparent 60%),
+      var(--bg);
+    letter-spacing:.2px; overflow-x:hidden;
+  }
+
+  /* Ambient grid + scanline (decor only) */
+  body::before, body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:-1}
+  body::before{
+    background:
+      linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size:28px 28px; opacity:.3;
+    mask-image: radial-gradient(60% 60% at 50% 40%, #000 55%, transparent 82%);
+  }
+  body::after{
+    background:linear-gradient(0deg, rgba(255,255,255,.05) 0.5px, transparent 1px);
+    background-size:100% 4px; mix-blend-mode:soft-light; opacity:.12;
+  }
+
+  .wrap{max-width:760px;margin:0 auto;padding:18px 12px 120px}
+
+  /* Topbar */
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:10px; position:relative}
+  .top::after{
+    content:""; position:absolute; left:0; right:0; bottom:-8px; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(0,255,156,.55), transparent); opacity:.6
+  }
+  .brand{
+    font-size:22px;font-weight:1000;letter-spacing:.6px;
+    background:linear-gradient(90deg,#fff,#d6fff1 35%,#aaffde 70%,#b6ffe7);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 22px rgba(0,255,156,.18);
+  }
+  .note{color:var(--mut);font-size:12.5px}
+  .btn-menu{
+    margin-left:auto;padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)),
+      linear-gradient(180deg,#0a1c14,#071a12);
+    color:#d8fff2; font-weight:900; cursor:pointer; box-shadow:var(--halo);
+    transition:transform .12s ease, filter .2s ease, box-shadow .2s ease;
+  }
+  .btn-menu:hover{filter:brightness(1.05); transform:translateY(-1px); box-shadow:var(--glow)}
+  .btn-menu:focus{outline:none; box-shadow:0 0 0 4px rgba(0,255,156,.18), var(--halo)}
+
+  /* card / sections */
+  .card{
+    position:relative;
+    background:
+      radial-gradient(100% 120% at 100% 0%, rgba(0,255,156,.08), transparent 65%),
+      linear-gradient(180deg,var(--panel),var(--panel2));
+    border:1px solid var(--line); border-radius:var(--r-xl);
+    box-shadow:var(--shadow), 0 0 0 1px rgba(0,255,156,.1) inset; overflow:hidden; margin-top:12px;
+  }
+  .card::before{content:""; position:absolute; inset:-8px; border-radius:24px; box-shadow:0 0 60px rgba(0,255,156,.22); pointer-events:none}
+  .cap{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px dashed #1f3e33}
+  .cap .dot{width:8px;height:8px;border-radius:50%;background:var(--g1);box-shadow:0 0 10px rgba(0,255,156,.85)}
+  .cap .title{font-weight:1000; letter-spacing:.4px}
+  .cap .mut{margin-left:auto;color:var(--mut);font-size:12px}
+  .b{padding:12px 14px}
+
+  /* switch */
+  .row{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+  .row + .row{border-top:1px dashed #1e4033}
+  .lb{display:flex;align-items:center;gap:10px;font-weight:900}
+  .ico{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#0f241b;border:1px solid #204b3b; box-shadow:0 0 0 1px rgba(255,255,255,.04) inset}
+  .sw{
+    width:46px;height:26px;border-radius:30px;border:1px solid #214f3d;background:#0f221a;position:relative;cursor:pointer;
+    box-shadow:var(--halo); transition:box-shadow .2s ease, filter .2s ease
+  }
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#dcffee;box-shadow:0 3px 8px rgba(0,0,0,.35);transition:left .22s cubic-bezier(.2,.9,.25,1.4)}
+  .sw:hover{filter:saturate(1.05)}
+  .sw.on{background:linear-gradient(90deg,var(--g2),var(--g1)); box-shadow:var(--glow)}
+  .sw.on::after{left:23px}
+
+  /* radio pill */
+  .radio{display:flex;gap:8px}
+  .pill{
+    padding:8px 14px;border-radius:999px;border:1px solid #2a6a52;background:
+      linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)),
+      #0a1c15;
+    color:var(--ink);
+    font-weight:900;cursor:pointer;transition:transform .12s ease, box-shadow .2s ease; box-shadow:var(--halo)
+  }
+  .pill:hover{transform:translateY(-1px)}
+  .pill.active{border:0;color:#072217;background:linear-gradient(135deg,var(--g2),var(--g1)); box-shadow:0 16px 40px rgba(0,255,156,.28)}
+
+  .hint{font-size:12.5px;color:var(--mut);margin-top:6px}
+
+  /* collapsible */
+  details{border:1px dashed #1e4033;border-radius:12px;padding:10px;background:#0a1c16; transition:filter .2s ease, box-shadow .2s ease}
+  details[open]{background:#0b2018; filter:saturate(1.02); box-shadow:0 0 0 1px rgba(0,255,156,.14) inset}
+  summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;font-weight:900}
+  summary::-webkit-details-marker{display:none}
+  .arr{opacity:.9; transition:transform .22s ease}
+  details[open] .arr{transform:rotate(90deg)}
+
+  /* slider */
+  .slider{margin-top:10px}
+  input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:999px;
+    background:
+      linear-gradient(90deg,var(--g2),var(--g1));
+    outline:none;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.3)}
+  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#dcffee;border:2px solid #0a3;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+  .val{font-weight:1000;color:#bfffe9; text-shadow:0 0 12px rgba(0,255,156,.18)}
+
+  /* device info */
+  .kv{display:grid;grid-template-columns: 220px 1fr;gap:10px}
+  .kv .k{font-weight:1000}
+  .danger{color:var(--danger);font-weight:900}
+
+  /* buttons */
+  .cta{
+    display:block;width:100%;margin-top:14px;padding:16px;border-radius:14px;border:0;cursor:pointer;
+    color:#072217;font-weight:1000;letter-spacing:.6px;background:linear-gradient(135deg,var(--g2),var(--g1));
+    box-shadow:0 18px 54px rgba(0,255,156,.32); transition:transform .12s ease, box-shadow .2s ease
+  }
+  .cta:hover{transform:translateY(-1px); box-shadow:0 22px 64px rgba(0,255,156,.38)}
+  .cta:focus{outline:none; box-shadow:0 0 0 4px rgba(0,255,156,.18), 0 18px 54px rgba(0,255,156,.32)}
+
+  /* toast */
+  #toast{
+    position:fixed;left:50%;top:12px;transform:translate(-50%,-140%);background:
+      linear-gradient(180deg, var(--panel), var(--panel2));
+    border:1px solid var(--line); color:var(--ink);padding:12px 14px;border-radius:14px;
+    box-shadow:var(--shadow);min-width:260px;z-index:99;transition:transform .28s cubic-bezier(.2,.9,.25,1.4)
+  }
+  #toast .m{font-size:12.5px;color:var(--mut)}
+
+  /* focus ring for keyboard users */
+  :focus-visible{outline:2px solid rgba(0,255,156,.45); outline-offset:2px; border-radius:10px}
+
+  /* scrollbar */
+  *{scrollbar-width:thin; scrollbar-color: rgba(0,255,156,.45) #08140f}
+  *::-webkit-scrollbar{height:10px;width:10px}
+  *::-webkit-scrollbar-track{background:#08140f}
+  *::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(0,255,156,.55), rgba(0,216,116,.55)); border-radius:999px}
+</style>
+</head>
+<body>
+<div id="toast" role="status" aria-live="polite" style="transform: translate(-50%, -140%);"><b>Thông báo</b><div class="m" id="tmsg">Đã kích hoạt • MID • Chung:100 / ADS:85 • </div></div>
+
+<main class="wrap">
+  <div class="top">
+    <div class="brand">AKATSUKI IPA</div>
+    <div class="note"></div>
+    <button class="btn-menu" id="btnMenu">Menu</button>
+  </div>
+
+  <!-- Tùy chọn nhanh -->
+  <section class="card">
+    <div class="cap"><span class="dot"></span><div class="title">TÙY CHỌN NHANH</div><div class="mut">DPI &amp; Expert</div></div>
+    <div class="b">
+      <div class="row">
+        <div class="lb"><div class="ico">🤖</div>DPI +400</div>
+        <div class="sw" id="sw400" role="switch" aria-checked="false"></div>
+      </div>
+      <div class="row">
+        <div class="lb"><div class="ico">🤖</div>DPI PRO</div>
+        <div class="sw" id="swExpert" role="switch" aria-checked="false"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Độ nhạy -->
+  <section class="card">
+    <div class="cap"><span class="dot"></span><div class="title">ĐỘ NHẠY</div><div class="mut">Tuỳ chỉnh linh hoạt</div></div>
+    <div class="b">
+      <div class="row" style="padding-top:0">
+        <div class="lb">Độ nhạy của bạn có chậm?</div>
+        <div class="radio">
+          <button class="pill" id="ansYes">CÓ</button>
+          <button class="pill active" id="ansNo">KHÔNG</button>
+        </div>
+      </div>
+      <div class="hint"> Mở rộng để tinh chỉnh chi tiết</div>
+
+      <div style="height:10px"></div>
+
+      <details id="low">
+        <summary>🖱️  THẤP <span class="arr">▶</span></summary>
+        <div class="slider">
+          <div>Chung: <span class="val" id="valLowG">70</span></div>
+          <input type="range" min="1" max="200" value="70" id="rngLowG">
+        </div>
+        <div class="slider">
+          <div>Ngắm: <span class="val" id="valLowA">60</span></div>
+          <input type="range" min="1" max="200" value="60" id="rngLowA">
+        </div>
+      </details>
+
+      <div style="height:10px"></div>
+
+      <details id="mid" open="">
+        <summary>🖱️  TRUNG BÌNH <span class="arr">▶</span></summary>
+        <div class="slider">
+          <div>Chung: <span class="val" id="valMidG">200</span></div>
+          <input type="range" min="1" max="200" value="100" id="rngMidG">
+        </div>
+        <div class="slider">
+          <div>Ngắm : <span class="val" id="valMidA">85</span></div>
+          <input type="range" min="1" max="200" value="85" id="rngMidA">
+        </div>
+      </details>
+
+      <div style="height:10px"></div>
+
+      <details id="high">
+        <summary>🖱️  CAO <span class="arr">▶</span></summary>
+        <div class="slider">
+          <div>Chung: <span class="val" id="valHighG">130</span></div>
+          <input type="range" min="1" max="200" value="130" id="rngHighG">
+        </div>
+        <div class="slider">
+          <div>Ngắm : <span class="val" id="valHighA">110</span></div>
+          <input type="range" min="1" max="200" value="110" id="rngHighA">
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Sao lưu / khôi phục -->
+  <section class="card">
+    <div class="cap"><span class="dot"></span><div class="title">SAO LƯU &amp; KHÔI PHỤC</div><div class="mut">Export / Import JSON</div></div>
+    <div class="b" style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn-menu" id="btnExport">Xuất JSON</button>
+      <label class="btn-menu" style="position:relative;overflow:hidden;display:inline-block">
+        Nhập JSON
+        <input id="importFile" type="file" accept="application/json" hidden="">
+      </label>
+      <button class="btn-menu" id="btnReset">Xoá cấu hình</button>
+    </div>
+  </section>
+
+  <!-- Thông tin thiết bị -->
+  <section class="card">
+    <div class="cap"><span class="dot"></span><div class="title">THÔNG TIN THIẾT BỊ</div><div class="mut">Tự động nhận</div></div>
+    <div class="b kv" id="kv">
+      <div class="k">Thiết bị:</div><div id="dev">iPhone</div>
+      <div class="k">Bộ nhớ trong (ước tính):</div><div id="storage">9 GB</div>
+      <div class="k">RAM (ước tính):</div><div id="ram">0 MB</div>
+      <div class="k">Tình trạng pin:</div><div id="battLife" class="danger">Chưa khả dụng</div>
+      <div class="k">Mức pin:</div><div id="battLevel">0%</div>
+    </div>
+    <div class="b">
+      <button class="cta" id="apply">KÍCH HOẠT CẤU HÌNH</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  const $=s=>document.querySelector(s);
+  function toast(msg){ const t=$("#toast"), m=$("#tmsg"); m.textContent=msg||""; t.style.transform="translate(-50%,0)"; clearTimeout(window.__tt); window.__tt=setTimeout(()=> t.style.transform="translate(-50%,-140%)",1700); }
+
+  const LS_KEY='uchiha_sensi_pro_vn_v1';
+  const S = JSON.parse(localStorage.getItem(LS_KEY) || '{"sw400":false,"swExpert":false,"slow":false,"profile":"mid","vals":{"low":[70,60],"mid":[100,85],"high":[130,110]}}');
+  function save(){ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+
+  /* Menu */
+  $("#btnMenu").addEventListener('click', ()=> location.href='menu.html');
+
+  /* Switches */
+  function bindSwitch(id,label){
+    const sw=$(id), k=id.slice(1);
+    if(S[k]){ sw.classList.add('on'); sw.setAttribute('aria-checked','true'); }
+    sw.addEventListener('click', ()=>{
+      sw.classList.toggle('on');
+      const on=sw.classList.contains('on');
+      S[k]=on; sw.setAttribute('aria-checked', String(on)); save();
+      toast(label + (on?': BẬT':': TẮT'));
+    });
+  }
+  bindSwitch('#sw400','DPI +400'); bindSwitch('#swExpert','DPI Chuyên gia');
+
+  /* Slow? */
+  const yes=$("#ansYes"), no=$("#ansNo");
+  function setSlow(v){ S.slow=v; yes.classList.toggle('active', v); no.classList.toggle('active', !v); save(); }
+  yes.addEventListener('click', ()=>setSlow(true));
+  no.addEventListener('click', ()=>setSlow(false));
+  setSlow(!!S.slow);
+
+  /* Profiles & sliders */
+  const groups={
+    low:{ g:$("#rngLowG"), a:$("#rngLowA"), vg:$("#valLowG"), va:$("#valLowA") },
+    mid:{ g:$("#rngMidG"), a:$("#rngMidA"), vg:$("#valMidG"), va:$("#valMidA") },
+    high:{ g:$("#rngHighG"), a:$("#rngHighA"), vg:$("#valHighG"), va:$("#valHighA") }
+  };
+  ["low","mid","high"].forEach(p=>{
+    const [gv,av]=S.vals[p]||[100,80];
+    groups[p].g.value=gv; groups[p].a.value=av;
+    groups[p].vg.textContent=gv; groups[p].va.textContent=av;
+    groups[p].g.addEventListener('input',()=>{ groups[p].vg.textContent=groups[p].g.value; S.vals[p]=[+groups[p].g.value,+groups[p].a.value]; save(); });
+    groups[p].a.addEventListener('input',()=>{ groups[p].va.textContent=groups[p].a.value; S.vals[p]=[+groups[p].g.value,+groups[p].a.value]; save(); });
+    $("#"+p).addEventListener('toggle', ()=>{ if($("#"+p).open){ S.profile=p; save(); } });
+  });
+  (function openDefault(){ const el=document.getElementById(S.profile||'mid'); if(el&&!el.open) el.open=true; })();
+
+  /* Export / Import / Reset */
+  $("#btnExport").addEventListener('click', ()=>{
+    const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='sensi_pro_backup.json'; a.click(); URL.revokeObjectURL(a.href);
+    toast('Đã xuất cấu hình JSON');
+  });
+  $("#importFile").addEventListener('change', function(){
+    const f=this.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const data=JSON.parse(r.result);
+        // gộp hợp lệ
+        if(data && data.vals){ Object.assign(S, data); save(); location.reload(); }
+        else throw new Error('bad');
+      }catch{ toast('File không hợp lệ'); }
+    };
+    r.readAsText(f);
+  });
+  $("#btnReset").addEventListener('click', ()=>{
+    if(confirm('Xoá toàn bộ cài đặt Sensi?')){ localStorage.removeItem(LS_KEY); location.reload(); }
+  });
+
+  /* Thiết bị */
+  (async function devInfo(){
+    $("#dev").textContent=(navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '—';
+    const ram=navigator.deviceMemory||0; $("#ram").textContent=ram? (ram+' GB'):'0 MB';
+    if(navigator.storage && navigator.storage.estimate){
+      try{ const e=await navigator.storage.estimate(); const total=e.quota||0; $("#storage").textContent= total? ((total/1073741824)|0)+' GB':'0 GB'; }catch{ $("#storage").textContent='0 GB'; }
+    }else $("#storage").textContent='0 GB';
+    if(navigator.getBattery){
+      try{ const b=await navigator.getBattery(); $("#battLevel").textContent=Math.round(b.level*100)+'%'; $("#battLife").textContent=b.charging?'Đang sạc':'—'; }catch{}
+    }
+  })();
+
+  /* Apply */
+  $("#apply").addEventListener('click', ()=>{
+    save();
+    const p=S.profile.toUpperCase(), v=S.vals[S.profile];
+    toast(`Đã kích hoạt • ${p} • Chung:${v[0]} / ADS:${v[1]} • ${S.sw400?'DPI+400 ':''}${S.swExpert?'Chuyên gia ':''}`);
+  });
+</script>
+
+</body></html>
