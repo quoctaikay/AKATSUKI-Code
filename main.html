@@ -65,7 +65,7 @@
   .cap .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 12px rgba(0,255,136,.6)}
   .cap .mut{margin-left:auto;color:var(--mut);font-size:12px}
 
-  .item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px}
+  .item{display:flex;gap:12px;align-itemscenter;padding:12px;border-radius:12px}
   .item+.item{border-top:1px dashed #214637}
   .icon{width:36px;height:36px;border-radius:12px;border:1px solid #1e5d46;display:grid;place-items:center;background:#0c241b}
   .text .h{font-weight:900}.text .s{font-size:12px;color:var(--mut)}
@@ -97,7 +97,7 @@
   <!-- TOP -->
   <section class="top tilt" aria-labelledby="brandName">
     <div class="ava">
-      <img id="ava" alt="Avatar UCHIHA" loading="lazy" src="https://i.postimg.cc/XvT3fFHQ/85-C54337-9753-4-BFB-BF71-57-E7527-F4775.png" class="loaded">
+      <img id="ava" alt="Avatar UCHIHA" loading="lazy" src="https://i.postimg.cc/FK10J9gQ/ED25-B4-EB-7754-4643-8-EA9-6283-F675-C791.jpg" class="loaded">
     </div>
 
     <div class="title">
@@ -283,7 +283,7 @@ function play(name){
 
 /* ===== Avatar + Brand ===== */
 (function(){
-  const DEFAULT_AVA="https://i.postimg.cc/XvT3fFHQ/85-C54337-9753-4-BFB-BF71-57-E7527-F4775.png";
+  const DEFAULT_AVA="https://i.postimg.cc/FK10J9gQ/ED25-B4-EB-7754-4643-8-EA9-6283-F675-C791.jpg";
   const avaUrl = safeStorage.getItem(safeStorage.l,'uchiha_avatar_url') || DEFAULT_AVA;
   const brand = safeStorage.getItem(safeStorage.l,'uchiha_brand_name') || 'AKATSUKI APK TEAM';
   const tagline = safeStorage.getItem(safeStorage.l,'uchiha_brand_tag') || 'Nhanh • An toàn • Ổn định';
