@@ -1,7 +1,8 @@
 /* =========================================================
-   keys.js — UCHIHA • One-Device Key System (VIP) — v2.3 (hash support)
+   keys.js — UCHIHA • One-Device Key System (VIP) — v2.4 (hash fix)
    - Dùng key băm SHA256 để ẩn key gốc
    - Tool tích hợp sẵn: UCHIHA.hashKey("KEY-GOC") → in ra "sha256:...."
+   - FIX: bind theo hash thay vì key gốc → nhập đúng không bị kẹt menu
 ========================================================= */
 (function () {
   const ZALO_RENEW_URL = "https://zalo.me/0394615632"; // TODO: đổi sang Zalo của bạn
@@ -69,24 +70,28 @@
       const keyRaw = inputKey.trim();
       if(!keyRaw) return { ok:false, msg:"Hãy nhập key." };
 
-      // tra meta
+      // === Tìm meta & thống nhất ID (keyId) ===
+      let foundKey = keyRaw;
       let meta = window.UCHIHA_KEYS[keyRaw];
       if(!meta){
         const hx = await sha256Hex(keyRaw);
         for(const k in window.UCHIHA_KEYS){
           if(k.startsWith("sha256:") && k.slice(7).toLowerCase() === hx.toLowerCase()){
-            meta = window.UCHIHA_KEYS[k]; break;
+            meta = window.UCHIHA_KEYS[k];
+            foundKey = k; // ✅ Dùng luôn hash key làm ID
+            break;
           }
         }
       }
       if(!meta) return API._fail(keyRaw, "Key không tồn tại hoặc sai.", "not_found");
 
-      const keyId = toKeyId(keyRaw);
+      const keyId = toKeyId(foundKey); // ✅ lưu theo hash hoặc key chuẩn
       const binds = load(STORE_BIND, {});
       const fails = load(STORE_FAILS, {});
       const rec   = binds[keyId] || {};
       const fp    = getFingerprint();
 
+      // === Kiểm tra các trạng thái khóa ===
       if (rec.locked) {
         const why = rec.reason || "locked";
         const msg =
@@ -112,6 +117,7 @@
         }
       }
 
+      // === Nếu key đã từng bind ===
       if (rec.fp) {
         if (rec.fp !== fp) {
           rec.locked = true; rec.reason = "device_mismatch"; rec.lockAt = now();
@@ -127,6 +133,7 @@
         return { ok:true, msg:"Xác thực thành công.", exp:expAt||null, note:meta.note||"" };
       }
 
+      // === Nếu key lần đầu bind ===
       const startISO = new Date().toISOString();
       const expTime  = (meta.exp) ? new Date(meta.exp).getTime()
                                   : (meta.plan ? parsePlanStart(startISO, meta.plan) : 0);
