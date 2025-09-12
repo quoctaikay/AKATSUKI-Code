@@ -1,0 +1,406 @@
+<html lang="vi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>AKATSUKI IPA TEAM</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#00ff88">
+<meta name="color-scheme" content="dark">
+<style>
+  :root{
+    --bg:#030a07; --panel1:rgba(10,24,18,.58); --panel2:rgba(6,18,13,.54);
+    --line:#1a3a2d; --line2:#2a6a4f; --txt:#eafff6; --mut:#bfe7d5;
+    --brand:#00ff88; --brand2:#00d06a; --warn:#ffd24d; --err:#ff6b6b;
+    --r:18px; --blur:18px; --sh:0 20px 60px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{
+    margin:0;color:var(--txt);
+    font:500 15px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+    background:
+      radial-gradient(1200px 620px at 70% 10%, rgba(0,255,136,.18), transparent 60%),
+      radial-gradient(880px 520px at 12% 90%, rgba(0,210,120,.14), transparent 60%),
+      var(--bg);
+  }
+  #bgCanvas{position:fixed;inset:0;z-index:-1}
+  .wrap{max-width:640px;margin:0 auto;padding:22px 14px 80px}
+
+  .top{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  .ava{
+    width:64px;height:64px;border-radius:16px;overflow:hidden;
+    background:#0c221a;border:2px solid var(--brand);
+    box-shadow:0 0 20px rgba(0,255,136,.35), 0 10px 30px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .ava img{width:100%;height:100%;object-fit:cover;filter:blur(8px) saturate(1.02);transition:filter .35s ease}
+  .ava img.loaded{filter:none}
+  .title{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .brandLine{
+    display:flex;align-items:center;gap:10px;min-width:0;
+    font-weight:1000;letter-spacing:.8px;font-size:20px;line-height:1;
+    background:linear-gradient(90deg,#fff,#d4ffef 35%,#9fffd3 70%,#b4ffe3);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .subLine{font-size:12.5px;color:#c6f6e6;opacity:.9;letter-spacing:.3px}
+  .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--line2);font-weight:900}
+  .tier-1{background:linear-gradient(90deg,#6a5,#494,#383);color:#112}
+  .tier-2{background:linear-gradient(90deg,#7fd8a5,#59c58e);color:#04150e}
+  .tier-3{background:linear-gradient(90deg,#00ff88,#00d06a);color:#00160c}
+
+  .status{
+    margin-left:auto;display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:999px;font-weight:900;
+    border:1px solid var(--line2);background:linear-gradient(180deg, rgba(10,28,21,.7), rgba(6,18,13,.7));
+    box-shadow:var(--sh);backdrop-filter:blur(var(--blur))
+  }
+  .led{width:9px;height:9px;border-radius:50%;background:var(--brand);box-shadow:0 0 14px rgba(0,255,136,.9)}
+
+  .note{margin-top:6px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:rgba(9,26,19,.6);display:inline-block;color:#cfffef;font-size:12px}
+
+  .alert{margin:10px 0 0;padding:10px;border-radius:12px;border:1px solid #c58a00;background:rgba(255,210,77,.12);color:#fff6cc;display:none}
+
+  .panel{margin-top:12px;border-radius:var(--r);
+    border:1px solid var(--line);background:linear-gradient(180deg,var(--panel1),var(--panel2));
+    padding:12px;box-shadow:var(--sh);backdrop-filter:blur(var(--blur))}
+  .cap{display:flex;gap:10px;align-items:center;margin:2px 2px 10px;font-weight:900}
+  .cap .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 12px rgba(0,255,136,.6)}
+  .cap .mut{margin-left:auto;color:var(--mut);font-size:12px}
+
+  .item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px}
+  .item+.item{border-top:1px dashed #214637}
+  .icon{width:36px;height:36px;border-radius:12px;border:1px solid #1e5d46;display:grid;place-items:center;background:#0c241b}
+  .text .h{font-weight:900}.text .s{font-size:12px;color:var(--mut)}
+
+  .sw{margin-left:auto;position:relative;width:56px;height:30px;border-radius:30px;border:1px solid #214f3d;background:#0f221a;cursor:pointer}
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;background:#dcffee;border-radius:50%;box-shadow:0 3px 8px rgba(0,0,0,.35);transition:left .28s cubic-bezier(.2,.9,.25,1.4)}
+  .sw.on{background:#11a864;box-shadow:0 0 16px rgba(0,255,136,.35)}
+  .sw.on::after{left:29px}
+
+  .pill{margin-left:auto;padding:8px 12px;border-radius:12px;border:1px solid #1b6f52;background:#09271d;color:#caffee;font-weight:900}
+
+  .row{display:flex;gap:10px;margin-top:14px}
+  .btn,.btn2{position:relative;overflow:hidden;cursor:pointer;border-radius:14px;border:1px solid var(--line2);font-weight:1000}
+  .btn{flex:1;padding:16px;background:linear-gradient(135deg, rgba(0,255,136,.18), rgba(0,210,120,.14));box-shadow:var(--sh)}
+  .btn2{padding:12px 14px;background:linear-gradient(180deg,#0a1a14,#071610);color:#fff;text-align:center}
+
+  #toast{position:fixed;left:50%;top:12px;transform:translate(-50%,-140%);background:#08130f;border:1px solid var(--line2);color:#eafff6;border-radius:14px;padding:12px 14px;min-width:260px;z-index:50;transition:transform .28s cubic-bezier(.2,.9,.25,1.4)}
+  #toast .m{font-size:12px;color:#bfe7d5}
+
+  .tilt{transform-style:preserve-3d;transition:transform .25s ease}
+  @media (hover:hover){ .tilt:hover{transform:perspective(900px) rotateX(.8deg) rotateY(-.8deg)} }
+</style>
+</head>
+<body>
+<canvas id="bgCanvas" aria-hidden="true" width="375" height="641"></canvas>
+<div id="toast" role="status" aria-live="polite"><b id="toastTitle">Thông báo</b><div id="toastMsg" class="m"></div></div>
+
+<main class="wrap" role="main">
+  <!-- TOP -->
+  <section class="top tilt" aria-labelledby="brandName">
+    <div class="ava">
+      <img id="ava" alt="Avatar UCHIHA" loading="lazy" src="https://i.postimg.cc/XvT3fFHQ/85-C54337-9753-4-BFB-BF71-57-E7527-F4775.png" class="loaded">
+    </div>
+
+    <div class="title">
+      <div class="brandLine">
+        <span id="brandName">AKATSUKI IPA TEAM</span>
+        <span id="vipBadge" class="badge tier-3" title="Cấp VIP">ULTRA</span>
+      </div>
+      <div class="subLine" id="brandTag">Nhanh • An toàn • Ổn định</div>
+    </div>
+
+    <div class="status" id="statusPill" title="Trạng thái key">
+      <span class="led" id="led" style="background: var(--brand); box-shadow: rgba(0, 255, 136, 0.9) 0px 0px 14px;"></span>
+      <span id="statusText">🇻🇳</span>
+    </div>
+  </section>
+
+  <div id="note" class="note">DEMO TEST</div>
+  <div id="alert" class="alert" role="alert"></div>
+
+  <!-- PANEL 1 -->
+  <section class="panel tilt" aria-labelledby="cap1">
+    <div class="cap"><span class="dot" aria-hidden="true"></span><span id="cap1">Optimizer</span> <span class="mut" id="audioState">Âm thanh: OFF</span></div>
+
+    <div class="item">
+      <div class="icon" aria-hidden="true">IG</div>
+      <div class="text"><div class="h">Optimizer</div><div class="s">Bật tối ưu hoá hệ thống</div></div>
+      <button class="sw" data-key="opt-optimizer" role="switch" aria-checked="false" aria-label="Bật tắt Optimizer"></button>
+    </div>
+
+    <div class="item">
+      <div class="icon" aria-hidden="true">⚡</div>
+      <div class="text"><div class="h">Sensitivity Boost</div><div class="s">Tăng độ nhạy mượt</div></div>
+      <button class="sw" data-key="opt-sens" role="switch" aria-checked="false" aria-label="Bật tắt Sensitivity Boost"></button>
+    </div>
+
+    <div class="item">
+      <div class="icon" aria-hidden="true">TS</div>
+      <div class="text"><div class="h">Touch Screen</div><div class="s">Cải thiện cảm ứng</div></div>
+      <button class="sw" data-key="opt-touch" role="switch" aria-checked="false" aria-label="Bật tắt Touch Screen"></button>
+    </div>
+
+    <div class="item">
+      <div class="icon" aria-hidden="true">🔊</div>
+      <div class="text"><div class="h">UI Sounds</div><div class="s">Tắt/bật âm thanh</div></div>
+      <button class="sw" data-key="sound" role="switch" aria-checked="false" id="soundSw" aria-label="Bật tắt âm thanh"></button>
+    </div>
+  </section>
+
+  <!-- PANEL 2 -->
+  <section class="panel tilt" aria-labelledby="cap2">
+    <div class="cap"><span class="dot" aria-hidden="true"></span><span id="cap2">Combat Macros</span></div>
+    <div class="item">
+      <div class="icon" aria-hidden="true">AL</div>
+      <div class="text"><div class="h">AimLock</div><div class="s">Auto-aim assist</div></div>
+      <button class="sw" data-key="cm-aimlock" role="switch" aria-checked="false" aria-label="Bật tắt AimLock"></button>
+    </div>
+    <div class="item">
+      <div class="icon" aria-hidden="true">RC</div>
+      <div class="text"><div class="h">Smooth view sys</div><div class="s">Range smooth view</div></div>
+      <button class="sw" data-key="cm-smooth" role="switch" aria-checked="false" aria-label="Bật tắt Smooth view"></button>
+    </div>
+    <div class="item">
+      <div class="icon" aria-hidden="true">QS</div>
+      <div class="text"><div class="h">Head Scope</div><div class="s">Faster scope head</div></div>
+      <button class="sw" data-key="cm-head" role="switch" aria-checked="false" aria-label="Bật tắt Head Scope"></button>
+    </div>
+  </section>
+
+  <!-- PANEL 3 -->
+  <section class="panel tilt" aria-labelledby="cap3">
+    <div class="item">
+      <div class="icon" aria-hidden="true">DPI</div>
+      <div class="text"><div class="h" id="cap3">DPI START</div><div class="s">Standard sensitivity</div></div>
+      <button class="pill" id="dpiPill" aria-pressed="true" style="opacity: 1;">ON</button>
+    </div>
+  </section>
+
+  <div class="row">
+    <button class="btn" type="button" id="btnCpu">CPU — Ultra Boost</button>
+    <a class="btn2" id="btnRenew" href="https://zalo.me/0394615632" target="_blank" rel="noopener">Admin</a>
+  </div>
+  <div class="row">
+    <button class="btn2" type="button" id="btnLogout">Đăng xuất</button>
+    <button class="btn2" type="button" id="btnReset">Reset</button>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+/* ===== Safe storage helpers ===== */
+const safeStorage = {
+  get l(){ try{return window.localStorage}catch{return null} },
+  get s(){ try{return window.sessionStorage}catch{return null} },
+  setItem(store,k,v){ try{ store?.setItem(k,v) }catch{} },
+  getItem(store,k){ try{ return store?.getItem(k) }catch{ return null } },
+  removeItem(store,k){ try{ store?.removeItem(k) }catch{} }
+};
+
+/* ===== GUARD: chấp nhận cả sessionStorage & localStorage ===== */
+(function(){
+  function get(store, k){ try{ return store && store.getItem(k); }catch{ return null; } }
+  const token = get(safeStorage.s,'auth_token') || get(safeStorage.l,'auth_token');
+  const expMs = +(get(safeStorage.l,'uchiha_key_expires') || 0);
+
+  if(!token){
+    location.href = 'index.html';
+    return;
+  }
+  if(expMs && Date.now() > expMs){
+    try{
+      safeStorage.removeItem(safeStorage.s,'auth_token');
+      safeStorage.removeItem(safeStorage.l,'auth_token');
+      safeStorage.removeItem(safeStorage.l,'uchiha_key_expires');
+      safeStorage.removeItem(safeStorage.l,'uchiha_key_note');
+    }catch{}
+    location.href = 'index.html';
+  }
+})();
+
+/* ===== BG Particles (Neo-Green) ===== */
+(function(){
+  const c=document.getElementById('bgCanvas'); if(!c) return;
+  const x=c.getContext('2d');
+  let W,H,p=[];
+  function rs(){
+    W=c.width=innerWidth;H=c.height=innerHeight;
+    if(!p.length){
+      const n=Math.min(160,Math.floor((W*H)/9000));
+      for(let i=0;i<n;i++) p.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.33,vy:(Math.random()-.5)*.33,r:Math.random()*1.9+.6,a:Math.random()*.5+.18});
+    }
+  }
+  rs(); addEventListener('resize',rs,{passive:true});
+  (function t(){
+    x.clearRect(0,0,W,H);
+    const g=x.createRadialGradient(W*.7,H*.15,60,W*.7,H*.15,W*.9);
+    g.addColorStop(0,'rgba(0,255,136,.22)'); g.addColorStop(1,'rgba(0,0,0,0)');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.globalCompositeOperation='lighter';
+    for(const m of p){
+      m.x+=m.vx; m.y+=m.vy;
+      if(m.x<0||m.x>W)m.vx*=-1;
+      if(m.y<0||m.y>H)m.vy*=-1;
+      x.beginPath(); x.arc(m.x,m.y,m.r,0,Math.PI*2); x.fillStyle=`rgba(0,255,136,${m.a})`; x.fill();
+    }
+    x.globalCompositeOperation='source-over';
+    requestAnimationFrame(t);
+  })();
+})();
+
+/* ===== Toast + âm thanh ===== */
+function toast(t,m){
+  const box=document.getElementById('toast'); if(!box) return;
+  const title=document.getElementById('toastTitle'), msg=document.getElementById('toastMsg');
+  if(title) title.textContent=t||'Thông báo';
+  if(msg) msg.textContent=m||'';
+  box.style.transform='translate(-50%,0)';
+  play('toggle');
+  clearTimeout(window.__tt);
+  window.__tt=setTimeout(()=> box.style.transform='translate(-50%,-140%)',1500);
+}
+const sounds = (()=>{
+  let ctx;
+  const ensureCtx=()=>{ if(!ctx){ try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch{} } return ctx; };
+  const osc = (f=880,ms=100)=>{
+    if(safeStorage.getItem(safeStorage.l,'uchiha_sound')!=='1') return;
+    const c=ensureCtx(); if(!c) return;
+    const o=c.createOscillator(), g=c.createGain();
+    o.connect(g).connect(c.destination);
+    o.frequency.value=f;
+    g.gain.setValueAtTime(.08, c.currentTime);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+ms/1000);
+    o.stop(c.currentTime+ms/1000);
+  };
+  return { toggle:()=>osc(920,90), success:()=>osc(620,160), error:()=>osc(340,200) };
+})();
+function play(name){
+  if(name==='toggle') sounds.toggle();
+  else if(name==='success') sounds.success();
+  else if(name==='error') sounds.error();
+}
+
+/* ===== Avatar + Brand ===== */
+(function(){
+  const DEFAULT_AVA="https://i.postimg.cc/XvT3fFHQ/85-C54337-9753-4-BFB-BF71-57-E7527-F4775.png";
+  const avaUrl = safeStorage.getItem(safeStorage.l,'uchiha_avatar_url') || DEFAULT_AVA;
+  const brand = safeStorage.getItem(safeStorage.l,'uchiha_brand_name') || 'AKATSUKI APK TEAM';
+  const tagline = safeStorage.getItem(safeStorage.l,'uchiha_brand_tag') || 'Nhanh • An toàn • Ổn định';
+
+  const img = document.getElementById('ava');
+  if(img){
+    img.addEventListener('load', ()=> img.classList.add('loaded'), {once:true});
+    img.src = avaUrl;
+  }
+  const brandEl=document.getElementById('brandName');
+  const tagEl=document.getElementById('brandTag');
+  if(brandEl) brandEl.textContent = brand;
+  if(tagEl) tagEl.textContent = tagline;
+
+  const note=safeStorage.getItem(safeStorage.l,'uchiha_key_note')||'';
+  if(note){
+    const el=document.getElementById('note');
+    if(el){ el.hidden=false; el.textContent=note; }
+  }
+
+  const tier = (safeStorage.getItem(safeStorage.l,'uchiha_vip_tier')||'ultra').toLowerCase();
+  const badge=document.getElementById('vipBadge');
+  const map={bronze:['BRONZE','tier-1'],silver:['SILVER','tier-2'],gold:['GOLD','tier-3'],ultra:['ULTRA','tier-3']};
+  const cfg=map[tier]||map.ultra;
+  if(badge){ badge.textContent=cfg[0]; badge.className='badge '+cfg[1]; }
+})();
+
+/* ===== Trạng thái & cảnh báo (không hiển thị thời gian) ===== */
+(function(){
+  const exp=+(safeStorage.getItem(safeStorage.l,'uchiha_key_expires')||0);
+  const statusText=document.getElementById('statusText');
+  const led=document.getElementById('led');
+  const alertBox=document.getElementById('alert');
+  const pill=document.getElementById('statusPill');
+
+  const left = exp ? (exp - Date.now()) : Number.POSITIVE_INFINITY;
+
+  if(left<=0){
+    if(statusText) statusText.textContent='VIP Hết hạn';
+    if(led){ led.style.background='#ff6b6b'; led.style.boxShadow='0 0 14px rgba(255,107,107,.9)'; }
+  }else{
+    if(statusText) statusText.textContent='🇻🇳';
+    if(led){ led.style.background='var(--brand)'; led.style.boxShadow='0 0 14px rgba(0,255,136,.9)'; }
+    if(isFinite(left) && left < 3*24*3600*1000){
+      if(alertBox){
+        alertBox.style.display='block';
+        alertBox.textContent='⚠️ Key sắp hết hạn — vui lòng gia hạn để tránh gián đoạn.';
+      }
+      if(pill) pill.style.borderColor='#c58a00';
+    }
+  }
+})();
+
+/* ===== Switches + DPI + Sound ===== */
+const STORE='uchiha_menu_switches_v3';
+function load(){ try{return JSON.parse(safeStorage.getItem(safeStorage.l,STORE)||'{}')}catch{return{}} }
+function save(s){ safeStorage.setItem(safeStorage.l,STORE, JSON.stringify(s)); }
+
+(function init(){
+  const state=load();
+  if(safeStorage.getItem(safeStorage.l,'uchiha_sound')===null) safeStorage.setItem(safeStorage.l,'uchiha_sound','1');
+
+  document.querySelectorAll('.sw').forEach(sw=>{
+    const k=sw.dataset.key;
+    if(!k) return;
+    let val = k==='sound' ? safeStorage.getItem(safeStorage.l,'uchiha_sound')==='1' : !!state[k];
+    sw.classList.toggle('on', val); sw.setAttribute('aria-checked', String(val));
+
+    function set(v){
+      val=v; sw.classList.toggle('on', val); sw.setAttribute('aria-checked', String(val));
+      if(k==='sound'){
+        safeStorage.setItem(safeStorage.l,'uchiha_sound', val?'1':'0');
+        const aS=document.getElementById('audioState'); if(aS) aS.textContent='Âm thanh: ' + (val?'ON':'OFF');
+        play('toggle');
+      }else{
+        state[k]=val; save(state); play('toggle');
+      }
+    }
+    sw.addEventListener('click', ()=> set(!val));
+    sw.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){e.preventDefault(); set(!val);} });
+  });
+
+  const aS=document.getElementById('audioState');
+  if(aS) aS.textContent='Âm thanh: ' + (safeStorage.getItem(safeStorage.l,'uchiha_sound')==='1'?'ON':'OFF');
+
+  const pill=document.getElementById('dpiPill');
+  if(pill){
+    const on = state['dpi-start'] ?? true;
+    pill.textContent=on?'ON':'OFF'; pill.style.opacity=on?'1':'.55'; pill.setAttribute('aria-pressed', String(on));
+    pill.addEventListener('click', ()=>{
+      const cur=pill.textContent==='ON';
+      pill.textContent=cur?'OFF':'ON';
+      pill.style.opacity=cur?'.55':'1';
+      state['dpi-start']=!cur; save(state);
+      play('toggle');
+      toast('DPI START', !cur?'Đã bật DPI chuẩn':'Đã tắt DPI');
+    });
+  }
+
+  // Buttons
+  const btnCpu=document.getElementById('btnCpu');
+  if(btnCpu) btnCpu.addEventListener('click', ()=>{ location.href='cpu.html'; });
+  const btnLogout=document.getElementById('btnLogout');
+  if(btnLogout) btnLogout.addEventListener('click', logout);
+  const btnReset=document.getElementById('btnReset');
+  if(btnReset) btnReset.addEventListener('click', resetMenu);
+})();
+
+/* ===== Actions ===== */
+function logout(){
+  safeStorage.removeItem(safeStorage.s,'auth_token');
+  safeStorage.removeItem(safeStorage.l,'auth_token');
+  safeStorage.removeItem(safeStorage.l,'uchiha_key_expires');
+  safeStorage.removeItem(safeStorage.l,'uchiha_key_note');
+  location.href='index.html';
+}
+function resetMenu(){ safeStorage.removeItem(safeStorage.l,STORE); location.reload(); }
+</script>
+
+</body></html>
