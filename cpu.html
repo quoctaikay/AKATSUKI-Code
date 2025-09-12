@@ -1,0 +1,718 @@
+<html lang="vi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>AKATSUKI IPA TEAM</title>
+<meta name="color-scheme" content="dark">
+<style>
+  /* ================== VIP NEO-GREEN THEME ================== */
+  :root{
+    /* Chủ đạo neon xanh */
+    --acc1:#00ff88;        /* none xanh */
+    --acc2:#00d06a;        /* emerald */
+    --ink:#eafff6;         /* text */
+    --muted:#c7f2e2;       /* muted */
+    --bg:#060a08;          /* nền */
+    --panel:#0b1713;       /* kính 1 */
+    --panel2:#08130f;      /* kính 2 */
+    --stroke:#1f3d31;      /* viền */
+    --green:#2fff8d; --blue:#73e3ff; --pink:#ffc0e6;
+
+    --shadow:0 24px 70px rgba(0,0,0,.55);
+    --rad-xl:22px; --rad-lg:16px; --rad-sm:12px;
+    --speed-1:.18s; --speed-2:.28s; --spring:.32s cubic-bezier(.2,.9,.25,1.4);
+  }
+
+  /* Optional themes (vẫn giữ để bạn đổi trong Drawer) */
+  .t-neon{
+    --acc1:#60a5ff; --acc2:#00e1ff; --ink:#e9f1ff; --muted:#cdd6ff;
+    --bg:#0a0b14; --panel:#131528; --panel2:#0d0f21; --stroke:#2e3358;
+  }
+  .t-sakura{
+    --acc1:#ff8fb3; --acc2:#ff5f9c; --ink:#ffeef3; --muted:#ffd9e4;
+    --bg:#100a0e; --panel:#1a1216; --panel2:#120b10; --stroke:#3b2230;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    :root{ --speed-1:0s; --speed-2:0s; --spring:0s }
+    *{ animation-duration:0s !important; transition-duration:0s !important }
+  }
+
+  /* ================== BASE ================== */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(60vw 40vh at 18% 12%, rgba(0,255,136,.16), transparent 60%),
+      radial-gradient(50vw 42vh at 88% 0%, rgba(0,208,110,.12), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font:500 15px/1.6 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial;
+    overflow-x:hidden; letter-spacing:.2px;
+  }
+  .page{max-width:1100px;margin:0 auto;padding:18px 14px 140px}
+  @media (min-width:780px){ .page{padding-inline:20px} }
+
+  /* ================== TOPBAR ================== */
+  .topbar{display:flex;align-items:center;gap:12px}
+  .ava{
+    width:60px;height:60px;border-radius:16px;padding:3px;
+    background:conic-gradient(from 0deg, var(--acc1), var(--acc2), #0c261b, var(--acc1));
+    box-shadow:0 16px 36px rgba(0,255,136,.35);
+  }
+  .ava .inner{width:100%;height:100%;border-radius:999px;background:#06110d;overflow:hidden}
+  .ava img{width:100%;height:100%;object-fit:cover;display:block;filter:blur(8px) saturate(1.06);transition:filter var(--speed-2)}
+  .ava img.loaded{filter:none}
+
+  .brandWrap{display:flex;flex-direction:column}
+  .titleXL{
+    font-size:34px;font-weight:1000;letter-spacing:.6px; line-height:1.05;
+    background:linear-gradient(90deg,#fff,#d9fff1 35%,#a9ffdd 70%,#b9ffe8);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 22px rgba(0,255,136,.18);
+  }
+  .sub{margin-top:2px;font-size:12.5px;color:#baf2df}
+
+  .actions{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .vipBadge{
+    padding:8px 10px;border-radius:999px;font-weight:1000;font-size:11px;letter-spacing:.5px;
+    background:linear-gradient(135deg, rgba(0,255,136,.15), rgba(0,255,136,.05));
+    border:1px solid rgba(0,255,136,.35); color:#d2fff1;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), 0 10px 24px rgba(0,255,136,.20);
+  }
+
+  /* Icon btn */
+  .icbtn{
+    position:relative;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+    background:linear-gradient(180deg,var(--panel), var(--panel2)); border:1px solid var(--stroke);
+    box-shadow:0 12px 28px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.06);
+    overflow:hidden; cursor:pointer; isolation:isolate; transition:transform .12s ease, filter .2s ease;
+  }
+  .icbtn:hover{transform:translateY(-1px); filter:saturate(1.05)}
+  .icbtn::after{content:"";position:absolute;inset:-2px;border-radius:16px;box-shadow:0 0 26px rgba(0,255,136,.35) inset;opacity:.85;pointer-events:none}
+  .icbtn::before{content:"";position:absolute;left:-120%;top:0;height:100%;width:120%;transform:skewX(-20deg);
+    background:linear-gradient(75deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.18) 45%, rgba(255,255,255,0) 70%);transition:left .5s ease}
+  .icbtn:hover::before{left:120%}
+  .icbtn svg{width:22px;height:22px;opacity:.98}
+
+  /* ================== BAR ================== */
+  .bar{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;margin-top:16px}
+  .search{display:flex;align-items:center;gap:8px;padding:12px 14px;border-radius:16px;background:var(--panel); border:1px solid var(--stroke)}
+  .search input{flex:1;background:transparent;border:0;outline:none;color:var(--ink);font-size:14px}
+  .pillToggle,.pill{
+    position:relative;padding:12px 14px;border-radius:16px;color:#e7fff4;font-weight:900;cursor:pointer;border:0;
+    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); transition:transform .12s ease, filter .2s ease;
+  }
+  .pill:hover,.pillToggle:hover{transform:translateY(-1px)}
+  .pillToggle.active{box-shadow:inset 0 0 0 1px rgba(0,255,136,.55); background:linear-gradient(180deg, rgba(0,255,136,.08), rgba(0,255,136,.03))}
+
+  .select{padding:12px 14px;border-radius:16px;background:var(--panel);border:1px solid var(--stroke);color:var(--ink)}
+
+  /* ================== STATS ================== */
+  .stats{
+    margin-top:12px;padding:16px;border-radius:var(--rad-xl);
+    background:linear-gradient(180deg, color-mix(in oklab,var(--panel) 90%, black), color-mix(in oklab,var(--panel2) 90%, black));
+    border:1px solid var(--stroke); box-shadow:var(--shadow), 0 0 0 1px rgba(0,255,136,.12) inset;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative
+  }
+  .stats::before{content:"";position:absolute;inset:-8px;border-radius:26px;box-shadow:0 0 70px rgba(0,255,136,.28)}
+  .stat{display:grid;place-items:center;text-align:center}
+  .stat .n{font-weight:1000;font-size:22px;color:#b9ffe8}
+
+  /* ================== LIST / CARDS ================== */
+  .list{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+  .list.listview{grid-template-columns:1fr}
+  .card{
+    position:relative;padding:16px;border-radius:var(--rad-xl);
+    background:linear-gradient(180deg, color-mix(in oklab,var(--panel) 92%, black), color-mix(in oklab,var(--panel2) 92%, black));
+    border:1px solid var(--stroke); box-shadow:var(--shadow), 0 0 0 1px rgba(0,255,136,.1) inset;
+    transform-style:preserve-3d; overflow:hidden; transition:transform var(--spring), filter var(--speed-1);
+  }
+  .card::before{content:"";position:absolute;inset:-10px;border-radius:26px;box-shadow:0 0 60px rgba(0,255,136,.22);pointer-events:none}
+  .row{display:flex;align-items:center;gap:12px}
+  .app{width:56px;height:56px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#0d261d,#113229);border:1px solid #1f4e3e;box-shadow:0 12px 20px rgba(0,0,0,.45);overflow:hidden}
+  .app img{width:100%;height:100%;object-fit:cover; display:block}
+  .name{font-weight:1000;font-size:20px;color:#e6fff7}
+  .tag{display:inline-block;margin-left:8px;padding:6px 10px;border-radius:10px;background:#0f2a21;border:1px solid #1d4d3b;color:#9effd9;font-weight:900;font-size:12px}
+  .sessions{margin-left:auto;color:#c9cfcf;font-weight:700;white-space:nowrap}
+  .small{font-size:12px;color:#a8b9b2;white-space:nowrap}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#0e221b;border:1px solid var(--stroke);font-weight:900}
+  .green{color:var(--green)}
+  .meta{margin-top:8px;color:#d1e6df}
+
+  .favBtn{margin-left:8px;padding:6px 8px;border-radius:10px;background:#0d211a;border:1px solid var(--stroke);cursor:pointer;font-weight:800;color:#dbfff0}
+  .favBtn.active{background:#103125;box-shadow:0 0 0 1px rgba(0,255,136,.35) inset}
+
+  .go{
+    --g1:var(--acc2); --g2:var(--acc1);
+    position:relative; display:inline-flex; align-items:center; gap:10px;
+    padding:11px 14px; border-radius:12px; border:0; cursor:pointer; color:#062016;
+    font-weight:900; letter-spacing:.4px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06)),
+      linear-gradient(135deg,var(--g1),var(--g2));
+    box-shadow:0 18px 46px rgba(0,255,136,.28), inset 0 0 0 1px rgba(255,255,255,.10);
+    overflow:hidden; isolation:isolate; transition:transform .12s ease, filter .2s ease;
+  }
+  .go:hover{transform:translateY(-1px); filter:saturate(1.05)}
+  .r{position:absolute;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(circle, rgba(255,255,255,.35), rgba(255,255,255,0) 70%);width:0;height:0;opacity:.9}
+
+  .ctx{position:absolute;min-width:160px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--stroke);box-shadow:0 20px 50px rgba(0,0,0,.55);border-radius:12px;padding:6px;display:none;z-index:60}
+  .ctx.show{display:block}
+  .ctx button{width:100%;text-align:left;padding:8px 10px;border-radius:8px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+  .ctx button:hover{background:rgba(0,255,136,.12)}
+
+  /* ================== DRAWER / MODAL / TOAST ================== */
+  .drawerWrap{position:fixed;inset:0;display:none;z-index:220}
+  .drawerWrap.show{display:block}
+  .mask{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+  .drawer{position:absolute;top:0;right:0;height:100%;width:min(380px,92%);background:linear-gradient(180deg,var(--panel),var(--panel2));border-left:1px solid var(--stroke);box-shadow:-20px 0 60px rgba(0,0,0,.6);padding:18px;transform:translateX(100%);transition:transform .25s ease;overflow:auto}
+  .drawerWrap.show .drawer{transform:none}
+  .bigAva{width:90px;height:90px;border-radius:50%;overflow:hidden;border:1px solid var(--stroke);box-shadow:0 0 30px rgba(0,255,136,.35);margin-bottom:10px}
+  .bigAva img{width:100%;height:100%;object-fit:cover}
+  .admName{font-weight:1000;font-size:18px;margin-bottom:6px;color:#dbfff0}
+  .link{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--panel2);border:1px solid #214b3b;margin-top:10px;cursor:pointer}
+  .link:hover{filter:brightness(1.05)}
+  .ico{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#0e231b}
+  .tx{font-weight:800}
+
+  .section{margin-top:12px;padding:12px;border:1px dashed var(--stroke);border-radius:12px}
+  .rowc{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{padding:10px 12px;border-radius:12px;border:1px solid var(--stroke);background:var(--panel);color:var(--ink);font-weight:900;cursor:pointer}
+  .btn.acc{background:linear-gradient(135deg, var(--acc2), var(--acc1)); border:0;color:#062016}
+
+  .modal{position:fixed;inset:0;background:rgba(4,10,8,.6);backdrop-filter:blur(6px);display:none;place-items:center;z-index:180}
+  .modal.show{display:grid}
+  .dlg{width:min(520px,92%);padding:22px;border-radius:20px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--stroke);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+  .logoRing{position:relative;width:120px;height:120px;margin:8px auto 14px}
+  .ring{position:absolute;inset:0;border:5px solid rgba(0,255,136,.22);border-top-color:var(--acc2);border-right-color:var(--acc1);border-radius:50%;animation:spin 1s linear infinite;filter:drop-shadow(0 0 12px rgba(0,255,136,.45))}
+  .centerDot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:var(--acc1);box-shadow:0 0 0 6px rgba(0,255,136,.15) inset, 0 0 14px rgba(0,255,136,.55)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .perc{font-weight:1000;font-size:22px;margin-top:8px}
+  .step{color:#d5efe6;font-size:13px;min-height:18px;margin-top:6px}
+  .prog{height:10px;border-radius:999px;background:#0b1c16;border:1px solid var(--stroke);overflow:hidden;margin-top:10px}
+  .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--acc1),var(--acc2));box-shadow:0 0 16px rgba(0,255,136,.55)}
+  .dlgBtns{display:flex;gap:10px;margin-top:12px}
+
+  .toasts{position:fixed;left:50%;top:12px;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;z-index:260}
+  .toast{
+    min-width:260px;max-width:90vw;padding:10px 12px 12px;border-radius:14px;color:var(--ink);
+    background:linear-gradient(180deg, var(--panel), var(--panel2)); border:1px solid var(--stroke);
+    box-shadow:0 12px 40px rgba(0,0,0,.55);
+    transform:translateY(-120%); opacity:0; transition:transform .25s ease, opacity .25s ease;
+    position:relative; overflow:hidden; pointer-events:none;
+  }
+  .toast.show{transform:translateY(0); opacity:1}
+  .toast .row{display:flex;align-items:center;gap:10px}
+  .toast .ic{width:20px;height:20px;color:#b9ffe8}
+  .tbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--acc1),var(--acc2));transform-origin:left;animation:tbar 2.2s linear forwards}
+  @keyframes tbar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+  /* FAB */
+  .fab{position:fixed;right:18px;bottom:22px;width:60px;height:60px;border-radius:50%;
+       display:grid;place-items:center;cursor:pointer;border:1px solid var(--stroke);
+       background:linear-gradient(180deg,var(--panel),var(--panel2));
+       box-shadow:0 16px 40px rgba(0,0,0,.55), 0 0 30px rgba(0,255,136,.18);
+       z-index:260; transition:transform .12s ease}
+  .fab:hover{transform:translateY(-1px)}
+  .fab::after{content:"";position:absolute;inset:-8px;border-radius:50%;box-shadow:0 0 60px rgba(0,255,136,.35)}
+  .fab svg{width:26px;height:26px}
+  .fabLabel{position:fixed;right:86px;bottom:28px;background:var(--panel);border:1px solid var(--stroke);color:var(--ink);padding:8px 10px;border-radius:10px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:260}
+
+  /* Canvas BG */
+  #bgCanvas{position:fixed;inset:0;z-index:-1;display:block}
+
+  @media (max-width:420px){ .titleXL{font-size:28px} .bar{grid-template-columns:1fr auto auto} .select.sort{display:none} }
+</style>
+</head>
+<body>
+<canvas id="bgCanvas" aria-hidden="true" width="375" height="641"></canvas>
+
+<div class="page" id="root">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="ava"><div class="inner"><img id="topAva" alt="Avatar" loading="lazy" src="https://postimg.cc/HJDrq1hS" class="loaded"></div></div>
+    <div class="brandWrap">
+      <div class="titleXL" id="brandTitle" aria-label="AKATSUKI">AKATSUKI</div>
+      <div class="sub" id="brandSub">• Kay Akatsuki • </div>
+    </div>
+    <div class="actions">
+      <div class="vipBadge">VIP</div>
+      <button class="icbtn magnet" id="btnFavView" title="Favorites (F)" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 17l-5.5 3 1.5-6.2L3 8.8l6.3-.5L12 2l2.7 6.3 6.3.5-5 5 1.5 6.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg>
+        <span class="r" aria-hidden="true"></span>
+      </button>
+      <button class="icbtn magnet" id="btnMenu" title="Menu" aria-haspopup="dialog" aria-controls="drawerWrap">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+        <span class="r" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search + Toggles -->
+  <div class="bar" role="search">
+    <label class="search" for="q">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"></circle><path d="M20 20l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+      <input id="q" type="search" placeholder="Tìm ứng dụng… (ấn / hoặc Ctrl/Cmd+K)" autocomplete="off" inputmode="search" aria-label="Tìm ứng dụng">
+    </label>
+    <button id="favToggle" class="pillToggle" aria-pressed="false" title="Chỉ hiển thị Favorites">Yêu Thích</button>
+    <select id="sortSel" class="select sort" title="Sắp xếp">
+      <option value="name">Tên (A→Z)</option>
+      <option value="sessions">Sessions (cao→thấp)</option>
+      <option value="recent">Gần đây</option>
+    </select>
+    <button id="viewToggle" class="pill" title="Đổi dạng hiển thị">•</button>
+  </div>
+
+  <!-- Filters mini -->
+  <div class="bar" style="grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px">
+    <input id="minFps" class="select" type="number" min="0" max="240" step="1" placeholder="Min FPS" title="Lọc theo FPS tối thiểu">
+    <input id="maxPing" class="select" type="number" min="0" max="300" step="1" placeholder="Max Ping" title="Lọc theo Ping tối đa (ms)">
+    <button id="clearFilter" class="pill">Xoá lọc</button>
+    <button id="openSettings" class="pill">Cài đặt</button>
+  </div>
+
+  <!-- Stats -->
+  <section class="stats" aria-label="Thống kê">
+    <div class="stat"><div class="lb">Ứng dụng</div><div class="n" id="statTotal">2</div></div>
+    <div class="stat"><div class="lb">Favorites</div><div class="n" id="statFav">0</div></div>
+    <div class="stat"><div class="lb">Lượt chạy</div><div class="n" id="statSessions">0</div></div>
+    <div class="stat"><div class="lb">Lần gần nhất</div><div class="n" id="statRecent">—</div></div>
+  </section>
+
+  <!-- List -->
+  <div class="list" id="list" role="list"><div class="card tilt" data-id="freefire" role="listitem"><div class="row"><div class="app"><img src="https://i.postimg.cc/9QpPDMqr/IMG-7641.png" alt="Free Fire" loading="lazy"></div><div><div class="name">Free Fire <span class="tag">FPS</span><button class="favBtn " aria-pressed="false">☆</button></div><div class="small">FPS <span class="pill" id="freefire-fps">0</span> &nbsp; Ping <span class="pill green" id="freefire-ping">0ms</span></div></div><div class="sessions"><span id="freefire-sessions">0</span> sessions</div></div><div class="meta small" aria-hidden="true">Super game optimization</div><div class="row" style="margin-top:10px;gap:8px"><button class="go magnet" data-id="freefire" aria-label="Bắt đầu Free Fire"><span class="r" aria-hidden="true"></span> Bắt đầu</button><button class="pill magnet ctxbtn" data-id="freefire">⋮</button></div></div><div class="card tilt" data-id="freefiremax" role="listitem"><div class="row"><div class="app"><img src="https://i.postimg.cc/rmvxBR7Y/IMG-7640.png" alt="Free Fire MAX" loading="lazy"></div><div><div class="name">Free Fire MAX <span class="tag">FPS</span><button class="favBtn " aria-pressed="false">☆</button></div><div class="small">FPS <span class="pill" id="freefiremax-fps">0</span> &nbsp; Ping <span class="pill green" id="freefiremax-ping">0ms</span></div></div><div class="sessions"><span id="freefiremax-sessions">0</span> sessions</div></div><div class="meta small" aria-hidden="true">Super game optimization</div><div class="row" style="margin-top:10px;gap:8px"><button class="go magnet" data-id="freefiremax" aria-label="Bắt đầu Free Fire MAX"><span class="r" aria-hidden="true"></span> Bắt đầu</button><button class="pill magnet ctxbtn" data-id="freefiremax">⋮</button></div></div></div>
+</div>
+
+<!-- Drawer (Menu / Settings) -->
+<div id="drawerWrap" class="drawerWrap" aria-hidden="true">
+  <div class="mask" data-close="drawer" tabindex="-1"></div>
+  <aside class="drawer" role="dialog" aria-label="Menu" aria-modal="true">
+    <div class="bigAva"><img id="bigAva" alt="" loading="lazy" src="https://i.postimg.cc/XvT3fFHQ/85-C54337-9753-4-BFB-BF71-57-E7527-F4775.png" class="loaded"></div>
+    <div class="admName" id="admNameTxt">AKATSUKI — APK</div>
+
+    <div class="section">
+      <div class="tx">Theme</div>
+      <div class="rowc" style="margin-top:8px">
+        <button class="btn acc" data-theme="ember">Neo-Green</button>
+        <button class="btn" data-theme="neon">Neon Blue</button>
+        <button class="btn" data-theme="sakura">Sakura</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="tx">Backup</div>
+      <div class="rowc" style="margin-top:8px">
+        <button class="btn" id="btnExport">Export JSON</button>
+        <label class="btn">
+          Import JSON
+          <input id="importFile" type="file" accept="application/json" hidden="">
+        </label>
+        <button class="btn" id="btnResetData">Reset Stats</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="tx">Trợ giúp nhanh</div>
+      <div class="rowc" style="margin-top:6px">
+        <div class="pill">Mua Key Mới Hoặc Nâng Cấp Key</div>
+        <div class="pill">Nhắn Tin Trực Tiếp Qua Admin</div>
+        <div class="pill">AKATSUKI Luôn Phục Vụ</div>
+      </div>
+    </div>
+
+    <button class="link" data-close="drawer"><div class="ico">✖</div><div class="tx">Đóng</div></button>
+  </aside>
+</div>
+
+<!-- Context menu -->
+<div id="ctx" class="ctx" role="menu" aria-hidden="true">
+  <button data-act="run">Bắt đầu</button>
+  <button data-act="fav">Thêm/Bỏ yêu thích</button>
+  <button data-act="clear">Xóa thống kê</button>
+</div>
+
+<!-- Toast -->
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Modal Optimize -->
+<div id="optModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="optTitle">
+  <div class="dlg">
+    <div class="logoRing"><div class="ring"></div><div class="centerDot"></div></div>
+    <h3 id="optTitle">Optimizing…</h3>
+    <div class="perc" id="perc">0%</div>
+    <div class="step" id="step">Preparing…</div>
+    <div class="prog" aria-hidden="true"><div class="bar" id="bar"></div></div>
+    <div class="dlgBtns"><button id="btnClose" class="btn">Đóng</button></div>
+  </div>
+</div>
+
+<!-- FAB Sensi -->
+<button class="fab" id="btnSensi" title="Sensi" aria-label="Mở trang Sensi">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill="url(#g)"></path><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="var(--acc2)"></stop><stop offset="1" stop-color="var(--acc1)"></stop></linearGradient></defs></svg>
+</button>
+<div class="fabLabel" id="fabLabel" style="opacity: 0; transition: opacity 0.35s;">Sensi</div>
+
+<script>
+  /* ====== Logo/Name (cho phép custom nhanh bằng localStorage) ====== */
+  var AVATAR_URL = localStorage.getItem('uchiha_avatar_url') ||
+    "https://i.postimg.cc/XvT3fFHQ/85-C54337-9753-4-BFB-BF71-57-E7527-F4775.png";
+  var BRAND_TITLE = localStorage.getItem('uchiha_brand_name') || "AKATSUKI";
+  var BRAND_SUB = localStorage.getItem('uchiha_brand_tag') || "• Phuc Phan • Anh Hoang • Văn Việt";
+
+  var topAva = document.getElementById('topAva');
+  var bigAva = document.getElementById('bigAva');
+  var brandTitleEl = document.getElementById('brandTitle');
+  var brandSubEl = document.getElementById('brandSub');
+  var admNameTxt = document.getElementById('admNameTxt');
+
+  function loadImg(img, url){ img.addEventListener('load', ()=> img.classList.add('loaded'), {once:true}); img.src=url; }
+  loadImg(topAva, AVATAR_URL); loadImg(bigAva, AVATAR_URL);
+  brandTitleEl.textContent = BRAND_TITLE;
+  brandSubEl.textContent = BRAND_SUB;
+  admNameTxt.textContent = BRAND_TITLE + " — APK";
+
+  /* ====== BG particles (emerald) ====== */
+  (function(){
+    var c=document.getElementById('bgCanvas'), x=c.getContext('2d'), W,H,p=[];
+    function r(){W=c.width=innerWidth;H=c.height=innerHeight;if(p.length===0){var n=Math.min(160,Math.floor((W*H)/11000));
+      for(var i=0;i<n;i++)p.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.33,vy:(Math.random()-.5)*.33,r:Math.random()*1.8+.7,a:Math.random()*.5+.18});}}
+    r(); addEventListener('resize',r,{passive:true});
+    (function t(){x.clearRect(0,0,W,H);
+      var g=x.createRadialGradient(W*.7,H*.15,60,W*.7,H*.15,W*.9);
+      g.addColorStop(0,'rgba(0,255,136,.20)'); g.addColorStop(1,'rgba(0,0,0,0)');
+      x.fillStyle=g; x.fillRect(0,0,W,H);
+      x.globalCompositeOperation='lighter';
+      for(var i=0;i<p.length;i++){var m=p[i]; m.x+=m.vx; m.y+=m.vy; if(m.x<0||m.x>W)m.vx*=-1; if(m.y<0||m.y>H)m.vy*=-1;
+        x.beginPath(); x.arc(m.x,m.y,m.r,0,Math.PI*2); x.fillStyle='rgba(0,255,136,'+m.a+')'; x.fill();}
+      x.globalCompositeOperation='source-over'; requestAnimationFrame(t);})();
+  })();
+
+  /* ====== State ====== */
+  var STORE='uchiha_games_state_prime_v2';
+  function load(){ try{ return JSON.parse(localStorage.getItem(STORE) || '{}'); }catch(e){ return {}; } }
+  function save(){ localStorage.setItem(STORE, JSON.stringify(state)); }
+  var state = load();
+  if(!state.apps) state.apps = {};
+  if(!state.fav) state.fav = {};
+  if(state.viewList === undefined) state.viewList = false;
+  state.theme = state.theme || 'ember'; // ember(neo-green) | neon | sakura
+  state.favOnly = !!state.favOnly;
+  state.sortBy = state.sortBy || 'name';
+
+  // Demo apps
+  var apps = [
+    { id:'freefire',     name:'Free Fire',     tag:'FPS',  iconPng:'https://i.postimg.cc/9QpPDMqr/IMG-7641.png' },
+    { id:'freefiremax',  name:'Free Fire MAX', tag:'FPS',  iconPng:'https://i.postimg.cc/rmvxBR7Y/IMG-7640.png' },
+    
+  ];
+  apps.forEach(a=>{ if(!state.apps[a.id]) state.apps[a.id]={sessions:0,fps:0,ping:0, last:0}; });
+
+  /* ====== Theme ====== */
+  function applyTheme(t){
+    document.body.classList.remove('t-neon','t-sakura');
+    if(t==='neon') document.body.classList.add('t-neon');
+    else if(t==='sakura') document.body.classList.add('t-sakura');
+  }
+  applyTheme(state.theme);
+
+  /* ====== UI refs ====== */
+  var list = document.getElementById('list');
+  var q = document.getElementById('q');
+  var favToggle = document.getElementById('favToggle');
+  var sortSel = document.getElementById('sortSel');
+  var viewToggle = document.getElementById('viewToggle');
+  var minFps = document.getElementById('minFps');
+  var maxPing = document.getElementById('maxPing');
+  var clearFilter = document.getElementById('clearFilter');
+
+  sortSel.value = state.sortBy;
+  list.classList.toggle('listview', !!state.viewList);
+  favToggle.classList.toggle('active', state.favOnly);
+  favToggle.setAttribute('aria-pressed', String(state.favOnly));
+  document.getElementById('btnFavView').setAttribute('aria-pressed', String(state.favOnly));
+
+  /* ====== Card ====== */
+  function cardTemplate(app, s){
+    var iconDom = app.iconPng ? '<img src="'+app.iconPng+'" alt="'+app.name+'" loading="lazy">' : '';
+    return (
+      '<div class="row">'+
+        '<div class="app">'+iconDom+'</div>'+
+        '<div>'+
+          '<div class="name">'+app.name+' <span class="tag">'+app.tag+'</span>'+
+            '<button class="favBtn '+(state.fav[app.id]?'active':'')+'" aria-pressed="'+(!!state.fav[app.id])+'">'+(state.fav[app.id]?'★':'☆')+'</button>'+
+          '</div>'+
+          '<div class="small">FPS <span class="pill" id="'+app.id+'-fps">'+s.fps+'</span> &nbsp; Ping <span class="pill green" id="'+app.id+'-ping">'+s.ping+'ms</span></div>'+
+        '</div>'+
+        '<div class="sessions"><span id="'+app.id+'-sessions">'+s.sessions+'</span> sessions</div>'+
+      '</div>'+
+      '<div class="meta small" aria-hidden="true">Super game optimization</div>'+
+      '<div class="row" style="margin-top:10px;gap:8px">'+
+        '<button class="go magnet" data-id="'+app.id+'" aria-label="Bắt đầu '+app.name+'"><span class="r" aria-hidden="true"></span> Bắt đầu</button>'+
+        '<button class="pill magnet ctxbtn" data-id="'+app.id+'">⋮</button>'+
+      '</div>'
+    );
+  }
+
+  /* ====== Sorting / Filters ====== */
+  function sortApps(listA){
+    if(state.sortBy==='name') return listA.sort((a,b)=> a.name.localeCompare(b.name));
+    if(state.sortBy==='sessions') return listA.sort((a,b)=> (state.apps[b.id].sessions||0)-(state.apps[a.id].sessions||0));
+    if(state.sortBy==='recent') return listA.sort((a,b)=> (state.apps[b.id].last||0)-(state.apps[a.id].last||0));
+    return listA;
+  }
+  function passFilters(app){
+    if(state.favOnly && !state.fav[app.id]) return false;
+    var term=(q.value||'').toLowerCase();
+    if(term && app.name.toLowerCase().indexOf(term)===-1) return false;
+    var s=state.apps[app.id];
+    if(minFps.value && (s.fps||0) < +minFps.value) return false;
+    if(maxPing.value && (s.ping||0) > +maxPing.value) return false;
+    return true;
+  }
+
+  /* ====== Render (lazy) ====== */
+  var PAGE=8, pageIdx=0, currentList=[];
+  function buildList(){
+    currentList = sortApps(apps.filter(passFilters));
+    pageIdx=0; list.innerHTML=''; loadMore();
+  }
+  function loadMore(){
+    var slice=currentList.slice(pageIdx*PAGE, (pageIdx+1)*PAGE);
+    slice.forEach(app=>{
+      var s = state.apps[app.id];
+      var card = document.createElement('div');
+      card.className='card tilt'; card.setAttribute('data-id', app.id); card.setAttribute('role','listitem');
+      card.innerHTML = cardTemplate(app, s);
+
+      card.querySelector('.go').addEventListener('click', function(e){ e.stopPropagation(); ripple(this, e); toast('Đang mở '+app.name+'…'); runOptimize(app.id); });
+      card.addEventListener('click', function(ev){ if(ev.target.classList.contains('favBtn') || ev.target.classList.contains('ctxbtn')) return; var btn = card.querySelector('.go'); ripple(btn, ev); runOptimize(app.id); });
+      card.querySelector('.favBtn').addEventListener('click', function(e){
+        e.stopPropagation(); state.fav[app.id]=!state.fav[app.id];
+        this.classList.toggle('active', state.fav[app.id]); this.setAttribute('aria-pressed', String(state.fav[app.id]));
+        this.textContent = state.fav[app.id] ? '★' : '☆'; save(); renderStats();
+      });
+      card.querySelector('.ctxbtn').addEventListener('click', function(e){ e.stopPropagation(); openCtx(app.id, e.clientX, e.clientY); });
+
+      list.appendChild(card);
+    });
+    pageIdx++;
+    attachMagnets();
+    renderStats();
+  }
+  // Infinite Scroll
+  var nearBottom=false;
+  window.addEventListener('scroll', function(){
+    if(nearBottom) return;
+    if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
+      nearBottom=true; setTimeout(function(){ if(pageIdx*PAGE < currentList.length) loadMore(); nearBottom=false; }, 100);
+    }
+  }, {passive:true});
+
+  /* ====== Stats ====== */
+  function renderStats(){
+    var total=apps.length, fav=Object.values(state.fav).filter(Boolean).length;
+    var sessions=0, lastTs=0;
+    for(var id in state.apps){ sessions += state.apps[id].sessions||0; lastTs = Math.max(lastTs, state.apps[id].last||0); }
+    countTo(document.getElementById('statTotal'), total);
+    countTo(document.getElementById('statFav'), fav);
+    countTo(document.getElementById('statSessions'), sessions, 400);
+    document.getElementById('statRecent').textContent = lastTs ? new Date(lastTs).toLocaleString() : '—';
+  }
+  function countTo(el, n, dur){ dur = dur||300; var a=+el.textContent||0, t=0, step=16;
+    var d = Math.max(1, Math.round(dur/step)), diff=n-a;
+    clearInterval(el.__t); el.__t=setInterval(function(){ t++; el.textContent = Math.round(a + diff*t/d); if(t>=d) clearInterval(el.__t); }, step);
+  }
+
+  /* ====== Search debounce ====== */
+  var qTimer;
+  q.addEventListener('input', function(){ clearTimeout(qTimer); qTimer=setTimeout(buildList, 120); }, {passive:true});
+
+  /* ====== Toggles / selectors ====== */
+  favToggle.addEventListener('click', function(){ state.favOnly = !state.favOnly; save();
+    favToggle.classList.toggle('active', state.favOnly); favToggle.setAttribute('aria-pressed', String(state.favOnly));
+    document.getElementById('btnFavView').setAttribute('aria-pressed', String(state.favOnly)); buildList(); });
+  sortSel.addEventListener('change', function(){ state.sortBy=this.value; save(); buildList(); });
+  viewToggle.addEventListener('click', function(){ state.viewList=!state.viewList; save(); list.classList.toggle('listview', !!state.viewList); });
+  minFps.addEventListener('change', buildList);
+  maxPing.addEventListener('change', buildList);
+  clearFilter.addEventListener('click', function(){ minFps.value=''; maxPing.value=''; buildList(); });
+
+  /* ====== Drawer / Settings ====== */
+  var drawerWrap=document.getElementById('drawerWrap'), btnMenu=document.getElementById('btnMenu');
+  function openDrawer(){ drawerWrap.classList.add('show'); drawerWrap.setAttribute('aria-hidden','false'); document.addEventListener('keydown', escCloseDrawer, {once:true}); }
+  function closeDrawer(){ drawerWrap.classList.remove('show'); drawerWrap.setAttribute('aria-hidden','true'); }
+  function escCloseDrawer(e){ if(e.key==='Escape') closeDrawer(); }
+  btnMenu.addEventListener('click', (e)=>{ ripple(btnMenu, e); openDrawer(); });
+  drawerWrap.addEventListener('click', function(e){ if(e.target.dataset.close==='drawer' || e.target.closest('[data-close="drawer"]')) closeDrawer(); });
+
+  // Theme buttons
+  drawerWrap.querySelectorAll('[data-theme]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.theme = btn.dataset.theme; save(); applyTheme(state.theme);
+      toast('Đã đổi theme: '+state.theme, 1600, 'ok');
+    });
+  });
+
+  // Backup
+  document.getElementById('btnExport').addEventListener('click', function(){
+    var blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='akatsuki_backup.json'; a.click(); URL.revokeObjectURL(a.href);
+    toast('Đã xuất cấu hình', 1500, 'ok');
+  });
+  document.getElementById('importFile').addEventListener('change', function(){
+    var f=this.files[0]; if(!f) return;
+    var r=new FileReader(); r.onload=function(){ try{
+      var data=JSON.parse(r.result); Object.assign(state, data); save();
+      applyTheme(state.theme||'ember'); sortSel.value=state.sortBy||'name';
+      list.classList.toggle('listview', !!state.viewList);
+      favToggle.classList.toggle('active', !!state.favOnly);
+      buildList(); toast('Đã import cấu hình', 1600, 'ok');
+    }catch(_){ toast('File không hợp lệ', 1800, 'warn'); } };
+    r.readAsText(f);
+  });
+
+  document.getElementById('btnResetData').addEventListener('click', function(){
+    if(confirm('Xoá toàn bộ thống kê (sessions/fps/ping)?')){ for(var id in state.apps){ state.apps[id]={sessions:0,fps:0,ping:0,last:0}; } save(); buildList(); toast('Đã reset thống kê', 1500, 'ok'); }
+  });
+
+  /* ====== Context menu ====== */
+  var ctx=document.getElementById('ctx'), ctxId=null;
+  function openCtx(id, x, y){
+    ctxId=id; ctx.style.left=(x+4)+'px'; ctx.style.top=(y+4)+'px';
+    ctx.classList.add('show'); ctx.setAttribute('aria-hidden','false');
+    document.addEventListener('click', closeCtx, {once:true});
+  }
+  function closeCtx(){ ctx.classList.remove('show'); ctx.setAttribute('aria-hidden','true'); }
+  ctx.addEventListener('click', function(e){
+    var act=e.target.dataset.act; if(!act) return;
+    if(act==='run'){ runOptimize(ctxId); }
+    if(act==='fav'){ state.fav[ctxId]=!state.fav[ctxId]; save(); buildList(); }
+    if(act==='clear'){ state.apps[ctxId]={sessions:0,fps:0,ping:0,last:0}; save(); buildList(); }
+    closeCtx();
+  });
+
+  /* ====== Toast ====== */
+  var toasts=document.getElementById('toasts');
+  function toast(msg, ms=2200, type='info'){
+    var el = document.createElement('div'); el.className='toast'; el.setAttribute('role','status');
+    el.innerHTML = `<div class="row">
+      <svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        ${type==='ok' ? '<path d="M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z"/>' :
+          type==='warn' ? '<path d="M1 21h22L12 2 1 21zm12-3h-2v2h2v-2zm0-6h-2v5h2v-5z"/>' :
+          '<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>'}
+      </svg>
+      <div><strong>${msg}</strong></div>
+    </div><div class="tbar" aria-hidden="true"></div>`;
+    toasts.appendChild(el); requestAnimationFrame(()=> el.classList.add('show'));
+    setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=> el.remove(), 300); }, ms);
+  }
+
+  /* ====== Optimize Flow ====== */
+  var modal=document.getElementById('optModal'), bar=document.getElementById('bar'), stepEl=document.getElementById('step'), perc=document.getElementById('perc'), title=document.getElementById('optTitle'), closeBtn=document.getElementById('btnClose');
+  function vibrate(ms){ if(navigator.vibrate) try{navigator.vibrate(ms||40);}catch(e){} }
+  function runOptimize(id){
+    var app = apps.find(a=>a.id===id) || {name:'App'};
+    title.textContent = 'Đang tối ưu ' + app.name + '…';
+    bar.style.width='0%'; perc.textContent='0%'; stepEl.textContent='Chuẩn bị…';
+    openModal();
+
+    var steps=['Dọn cache…','Tinh chỉnh lịch CPU…','Ổn định mạng…','Mượt chạm & I/O…','Thành công!'];
+    var p=0, iStep=0;
+    var timer=setInterval(function(){
+      p=Math.min(100, p+Math.random()*16+8);
+      bar.style.width=p+'%'; perc.textContent=Math.round(p)+'%';
+      if(p>18 && iStep<1){ stepEl.textContent=steps[0]; iStep=1; }
+      if(p>40 && iStep<2){ stepEl.textContent=steps[1]; iStep=2; }
+      if(p>65 && iStep<3){ stepEl.textContent=steps[2]; iStep=3; }
+      if(p>85 && iStep<4){ stepEl.textContent=steps[3]; iStep=4; }
+      if(p>=100){
+        clearInterval(timer);
+        stepEl.textContent=steps[4]; vibrate(60); toast(app.name+' đã sẵn sàng!', 2000, 'ok');
+        var s = state.apps[id]; s.sessions=(s.sessions||0)+1; s.fps=60; s.ping=16+Math.floor(Math.random()*5); s.last=Date.now();
+        save(); paintApp(id); closeBtn.focus({preventScroll:true});
+      }
+    },120);
+  }
+  function paintApp(id){
+    var s = state.apps[id]||{sessions:0,fps:0,ping:0,last:0};
+    var a=document.getElementById(id+'-sessions'); if(a) a.textContent=s.sessions;
+    var b=document.getElementById(id+'-fps'); if(b) b.textContent=s.fps;
+    var c=document.getElementById(id+'-ping'); if(c) c.textContent=s.ping+'ms';
+    renderStats();
+  }
+  function openModal(){ modal.classList.add('show'); document.addEventListener('keydown', escCloseModal, {once:true}); }
+  function closeModal(){ modal.classList.remove('show'); }
+  function escCloseModal(e){ if(e.key==='Escape') closeModal(); }
+  closeBtn.addEventListener('click', closeModal);
+
+  /* ====== Ripple / Magnet ====== */
+  function ripple(btn, e){
+    var r = btn.querySelector('.r'); if(!r){ r=document.createElement('span'); r.className='r'; btn.appendChild(r); }
+    var rect = btn.getBoundingClientRect(), x=e.clientX-rect.left, y=e.clientY-rect.top, s=Math.max(rect.width, rect.height)*1.8;
+    r.style.left=x+'px'; r.style.top=y+'px'; r.style.width=r.style.height='0px'; r.style.opacity='.95';
+    requestAnimationFrame(()=>{ r.style.transition='width .38s ease, height .38s ease, opacity .6s ease';
+      r.style.width=r.style.height=s+'px'; r.style.opacity='0';
+      setTimeout(()=>{ r.style.transition='none'; r.style.width=r.style.height='0px'; }, 420);
+    });
+  }
+  function attachMagnets(){
+    document.querySelectorAll('.magnet').forEach(function(btn){
+      if(btn.__magnet) return; btn.__magnet=true;
+      btn.addEventListener('pointermove', function(e){
+        var r = btn.getBoundingClientRect(); var dx=(e.clientX-(r.left+r.width/2))/(r.width/2), dy=(e.clientY-(r.top+r.height/2))/(r.height/2);
+        btn.style.transform = `translate(${dx*4}px, ${dy*3}px)`;
+      });
+      btn.addEventListener('pointerleave', ()=> btn.style.transform='translate(0,0)');
+      btn.addEventListener('click', (e)=> ripple(btn, e));
+    });
+  }
+
+  /* ====== Tilt ====== */
+  (function(){
+    var ticking=false;
+    function onMove(e){
+      if(ticking) return; ticking=true;
+      requestAnimationFrame(function(){
+        var cx=e.clientX, cy=e.clientY;
+        document.querySelectorAll('.tilt').forEach(function(card){
+          var r = card.getBoundingClientRect();
+          var inX = cx>=r.left && cx<=r.right, inY = cy>=r.top && cy<=r.bottom;
+          if(!inX || !inY){ card.style.transform=''; return; }
+          var x=(cx-(r.left+r.width/2))/(r.width/2), y=(cy-(r.top+r.height/2))/(r.height/2);
+          card.style.transform=`rotateY(${x*7}deg) rotateX(${-y*7}deg)`;
+        });
+        ticking=false;
+      });
+    }
+    document.addEventListener('pointermove', onMove, {passive:true});
+    document.addEventListener('pointerleave', ()=> document.querySelectorAll('.tilt').forEach(c=> c.style.transform=''));
+  })();
+
+  /* ====== Quick toggles & KB ====== */
+  document.getElementById('btnFavView').addEventListener('click', function(e){
+    ripple(this, e); state.favOnly = !state.favOnly; save();
+    favToggle.classList.toggle('active', state.favOnly); favToggle.setAttribute('aria-pressed', String(state.favOnly));
+    this.setAttribute('aria-pressed', String(state.favOnly)); buildList();
+    toast(state.favOnly?'Chỉ hiển thị Favorites':'Hiển thị tất cả');
+  });
+  document.getElementById('btnSensi').addEventListener('click', function(e){ ripple(this, e); location.href='sensi.html'; });
+  (function(){ var lbl=document.getElementById('fabLabel'); setTimeout(()=>{ lbl.style.opacity=0; lbl.style.transition='opacity .35s'; }, 1800); })();
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); q.focus(); }
+    if(e.key.toLowerCase()==='f'){ e.preventDefault(); document.getElementById('btnFavView').click(); }
+    if(e.key==='Enter' && document.activeElement===q){ var firstGo = document.querySelector('.go'); if(firstGo) firstGo.click(); }
+    if(e.key==='Escape'){ 
+      document.getElementById('ctx').classList.remove('show');
+      document.getElementById('optModal').classList.remove('show');
+      document.getElementById('drawerWrap').classList.remove('show');
+    }
+  }, {passive:false});
+
+  /* ====== Init ====== */
+  buildList();
+</script>
+
+</body></html>
