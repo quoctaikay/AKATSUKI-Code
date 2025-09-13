@@ -1,0 +1,123 @@
+ /* ===== Auto restore ===== */
+  (async function(){
+    const ok = (safeStorage.getItem(safeStorage.s,'auth_token')==='1') || (safeStorage.getItem(safeStorage.l,'auth_token')==='1');
+    const expMs = +(safeStorage.getItem(safeStorage.l,'uchiha_key_expires')||0);
+    if(ok && (!expMs || Date.now()<expMs)){ if(await menuExists()) location.href='menu.html'; }
+  })();
+
+  /* Tilt nhẹ */
+  (function(){ const card=document.querySelector('.card'); if(!card) return;
+    card.addEventListener('pointermove', e=>{
+      const r=card.getBoundingClientRect(), x=(e.clientX-(r.left+r.width/2))/(r.width/
+  /* ===== Floating Chat: Mua key ===== */
+  const chatFab = document.createElement('button');
+  chatFab.className='chat-fab'; chatFab.title='Mua key'; chatFab.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M3 7h2l2 10h10l2-7H7" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="19" r="1.4" fill="currentColor"/><circle cx="17" cy="19" r="1.4" fill="currentColor"/></svg>';
+  document.body.appendChild(chatFab);
+
+  const panel = document.createElement('section');
+  panel.className='chat-panel';
+  panel.innerHTML = `
+    <div class="chat-head">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="t">Mua key • Hỗ trợ</span>
+      <button class="xbtn" aria-label="Đóng">&times;</button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="msg bot"><div class="b">ADMIN "Phuc Phan" 👋<br> </div></div>
+      <div class="chat-quick" id="chatQuick">
+        <span class="chip" data-t="Bảng giá">Bảng giá</span>
+        <span class="chip" data-t="Cách kích hoạt">Cách kích hoạt</span>
+        <span class="chip" data-t="Mua key ngay">Mua key ngay</span>
+      </div>
+      <div class="cta">
+        <a href="${ZALO_URL}" target="_blank" rel="noopener" class="pri">Mua key ngay</a>
+        <a href="${ZALO_URL}" target="_blank" rel="noopener" class="sec">Liên hệ Admin</a>
+      </div>
+    </div>
+    <div class="chat-foot">
+      <input id="chatInput" placeholder="Nhắn tin…">
+      <button id="chatSend">Gửi</button>
+    </div>`;
+  document.body.appendChild(panel);
+
+  function togglePanel(show){ panel.classList.toggle('show', show); }
+  chatFab.addEventListener('click', ()=> togglePanel(!panel.classList.contains('show')));
+  panel.querySelector('.xbtn').addEventListener('click', ()=> togglePanel(false));
+
+  // Drag FAB
+  (function enableDrag(){
+    let sx=0, sy=0, ox=0, oy=0, dragging=false;
+    const minX=8, minY=8;
+    function pos(x,y){
+      const vw = window.innerWidth, vh=window.innerHeight;
+      const nx = Math.max(minX, Math.min(vw-66, x));
+      const ny = Math.max(minY, Math.min(vh-66, y));
+      chatFab.style.right = (vw - nx - 58) + 'px';
+      chatFab.style.bottom = (vh - ny - 58) + 'px';
+    }
+    chatFab.addEventListener('pointerdown', e=>{
+      dragging=true; sx=e.clientX; sy=e.clientY;
+      const rect=chatFab.getBoundingClientRect(); ox=rect.left; oy=rect.top; chatFab.setPointerCapture(e.pointerId);
+    });
+    chatFab.addEventListener('pointermove', e=>{
+      if(!dragging) return;
+      pos(ox + (e.clientX - sx), oy + (e.clientY - sy));
+    });
+    chatFab.addEventListener('pointerup', e=>{
+      if(!dragging) return; dragging=false; chatFab.releasePointerCapture(e.pointerId);
+    });
+  })();
+
+  // Chat logic
+  const chatBody = panel.querySelector('#chatBody');
+  const chatInput = panel.querySelector('#chatInput');
+  const chatSend = panel.querySelector('#chatSend');
+  function addMsg(role, text){
+    const item=document.createElement('div'); item.className='msg '+role;
+    item.innerHTML = `<div class="b">${text}</div>`; chatBody.appendChild(item);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+  function botReply(t){
+    const map = {
+      'bảng giá': '250K 1 OBB , 500K Vĩnh Viễn Nhấn "Mua key ngay"',
+      'cách kích hoạt': 'Sau khi có key, nhập ở trang đăng nhập → Đăng nhập. Hệ thống tự kiểm tra hạn còn/ hết',
+      'mua key ngay': `Nhấn nút <b>Mua key ngay</b> bên dưới để mở Zalo: <a href="${ZALO_URL}" target="_blank" rel="noopener">https://zalo.me/0964943392</a>`
+    };
+    const k = t.trim().toLowerCase();
+    addMsg('bot', map[k] || 'Mình đã nhận được tin nhắn. Bạn có thể bấm "Mua key ngay" hoặc nhắn nhu cầu cụ thể nhé !');
+  }
+  chatSend.addEventListener('click', ()=>{
+    const t = (chatInput.value||'').trim(); if(!t) return;
+    addMsg('you', t); chatInput.value=''; setTimeout(()=> botReply(t), 300);
+  });
+  chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ chatSend.click(); }});
+  panel.querySelector('#chatQuick').addEventListener('click', e=>{
+    const chip = e.target.closest('.chip'); if(!chip) return;
+    const t = chip.dataset.t || chip.textContent; addMsg('you', t); setTimeout(()=> botReply(t), 250);
+  });
+
+})();
+</script><button class="chat-fab" title="Mua key"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h2l2 10h10l2-7H7" stroke="currentColor" stroke-width="1.6"></path><circle cx="9" cy="19" r="1.4" fill="currentColor"></circle><circle cx="17" cy="19" r="1.4" fill="currentColor"></circle></svg></button><section class="chat-panel">
+    <div class="chat-head">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="t">Mua key • Hỗ trợ</span>
+      <button class="xbtn" aria-label="Đóng">×</button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="msg bot"><div class="b">ADMIN "Phuc Phan" 👋<br> </div></div>
+      <div class="chat-quick" id="chatQuick">
+        <span class="chip" data-t="Bảng giá">Bảng giá</span>
+        <span class="chip" data-t="Cách kích hoạt">Cách kích hoạt</span>
+        <span class="chip" data-t="Mua key ngay">Mua key ngay</span>
+      </div>
+      <div class="cta">
+        <a href="https://zalo.me/0964943392" target="_blank" rel="noopener" class="pri">Mua key ngay</a>
+        <a href="https://zalo.me/0964943392" target="_blank" rel="noopener" class="sec">Liên hệ Admin</a>
+      </div>
+    </div>
+    <div class="chat-foot">
+      <input id="chatInput" placeholder="Nhắn tin…">
+      <button id="chatSend">Gửi</button>
+    </div></section>
+
+</body></html>
