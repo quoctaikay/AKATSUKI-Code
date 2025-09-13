@@ -100,7 +100,7 @@
     "Kay-CGLQMP": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-GQZHTN": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-Sieudeptrai": { plan:{days:365}, note:"VIP 365 ngày" },
-    "Kay-PDXQJW": { plan:{days:vv}, note:"VIP Limited" },
+    "Kay-Limited": { plan:{days:vv}, note:"VIP Limited" },
     "Kay-RJTYKM": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-WQBNZR": { plan:{days:30}, note:"VIP 30 ngày" },
     "Kay-HBKQMP": { plan:{days:30}, note:"VIP 30 ngày" },
